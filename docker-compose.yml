@@ -49,7 +49,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - IMG_VER=2025-01-01_fafafaf
+        - IMG_VER=3.0.0-1
     image: isc30/emulerr:latest
     container_name: emulerr
     restart: unless-stopped
@@ -59,7 +59,7 @@ services:
       - PGID=1000
       - PORT=3000 # optional, default=3000
       - ED2K_PORT=4762 # optional, default=4662
-      - LOG_LEVEL=info # optional, default=info
+      - LOG_LEVEL=trace # optional, default=info
       - PASSWORD=1234 # optional, user=emulerr
     ports:
       - "3000:3000" # web ui
@@ -67,6 +67,7 @@ services:
       - "4665:4665/udp" # ed2k global search udp (tcp port +3)
       - "4672:4672/udp" # ed2k udp
       - "4711:4711" # DEV, amule webui
+      - "24678:24678" # DEV, vite
     volumes:
       - ./volume/config:/config
       - ./volume/data/usenet:/downloads
@@ -76,7 +77,7 @@ services:
       # - ./tmp:/emulerr-dev/node_modules # DEV mount
       - type: bind # DEV mount
         source: ./src/amule/api.php
-        target: /usr/share/amule/webserver/AmuleWebUI-Reloaded/api.php
+        target: /usr/share/amule/webserver/default/api.php
       - type: bind # DEV mount
         source: ./src/entrypoint.sh
         target: /home/entrypoint.sh
