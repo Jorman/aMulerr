@@ -1,0 +1,49 @@
+services:
+  amulerr:
+    container_name: amulerr
+    build: ./amulerr
+    entrypoint: 'pnpm run dev'
+    user: "0:0"
+    environment:
+      - AMULE_HOST=amule
+      - AMULE_PORT=4712
+      - AMULE_PWD=api-secret
+    ports:
+      - "3000:3000" # API (amulerr)
+    volumes:
+      - "./amulerr:/app"
+  amule:
+    image: ngosang/amule:latest
+    container_name: amule
+    environment:
+      - PUID=0
+      - PGID=0
+      - GUI_PWD=api-secret
+      - WEBUI_PWD=web-secret
+      - MOD_AUTO_RESTART_ENABLED=true
+      - MOD_AUTO_RESTART_CRON=0 6 * * *
+    ports:
+      - "4711:4711" # Web interface (amuleweb)
+      - "4712:4712" # External connections (amulegui, amulecmd, amuleweb)
+      - "4662:4662" # ED2K client-to-client TCP (required for High ID)
+      - "4665:4665/udp" # ED2K server UDP (global searches, TCP port +3)
+      - "4672:4672/udp" # Extended eMule protocol and Kademlia UDP
+    volumes:
+      - amule_data:/home/amule/.aMule
+      - downloads:/downloads
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=0
+      - PGID=0
+    ports:
+      - "7878:7878" # Web interface (radarr)
+    volumes:
+      - radarr_config:/config
+      - downloads:/downloads
+
+volumes:
+  downloads:
+  radarr_config:
+  amule_data:
