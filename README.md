@@ -1,51 +1,50 @@
-# eMulerr
+# aMulerr
 
-Seamless integration for eD2k/KAD (eMule) networks and Radarr/Sonarr, enjoy.
+Integrate your *rr apps with aMule (eD2k/KAD). Compatible with:
 
-[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/r/isc30/emulerr)
+- Radarr
+- Sonarr
 
-## v2 Rewrite (to be released on 07/2026)
-After amule has released v3 with many improvements including external connections, most of the codebase can be simplified.
-This is a work in progress that will soon be released in 07/2026.
-Please wait before submitting PRs.
+> aMulerr is the successor of eMulerr, which no longer exists.
 
-## Running the container
+## Example `docker-compose.yaml`
 
-Add the following service to your docker-compose:
+> Note: aMulerr connects to aMule, you should run it in a separate container
 
-```yml
+```yaml
 services:
-  emulerr:
-    image: isc30/emulerr:latest
-    container_name: emulerr
-    restart: unless-stopped
-    tty: true
+  amulerr:
+    container_name: amulerr
+    image: isc30/amulerr:latest
+    user: "1000:1000" # optional
     environment:
-      # - PUID=1000 # optional
-      # - PGID=1000 # optional
-      # - PORT=3000 # optional, web-ui port
-      # - ED2K_PORT=4662 # optional, only required when exposing a non-standard port
-      # - LOG_LEVEL=info # optional
-      # - PASSWORD=1234 # optional, user=emulerr
+      - AMULE_HOST=amule
+      - AMULE_PORT=4712
+      - AMULE_PWD=api-secret # API Password
     ports:
-      - "3000:3000" # web ui
-      - "4662:4662" # ed2k tcp
-      - "4662:4662/udp" # ed2k udp
-      # - "4665:4665/udp" # optional, ed2k global search udp (tcp port +3)
+      - "3000:3000" # API
+  amule:
+    container_name: amule
+    image: ngosang/amule:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - GUI_PWD=api-secret # API Password
+      - WEBUI_PWD=web-secret
+      - MOD_AUTO_RESTART_ENABLED=true
+      - MOD_AUTO_RESTART_CRON=0 6 * * *
+    ports:
+      - "4711:4711" # Web interface (amuleweb)
+      - "4712:4712" # External connections (amulerr)
+      - "4662:4662" # ED2K client-to-client TCP (required for High ID)
+      - "4665:4665/udp" # ED2K server UDP (global searches, TCP port +3)
+      - "4672:4672/udp" # Extended eMule protocol and Kademlia UDP
     volumes:
-      - ./config:/config # required
-      - ./downloads:/downloads # required
-      # - ./shared:/shared:ro # optional, extra files to be shared via ed2k/kad
-```
-
-(Optional) Add eMulerr as a dependency for Radarr, Sonarr, etc:
-
-```diff
- radarr:
-   image: lscr.io/linuxserver/radarr:latest
-+  depends_on:
-+    emulerr:
-+      condition: service_healthy
+      - downloads:/downloads
+      - amule_data:/home/amule/.aMule
+volumes:
+  downloads:
+  amule_data:
 ```
 
 ## Configuring *rr
@@ -53,50 +52,31 @@ services:
 In order to get started, configure the Download Client in *RR:
 
 - Type: `qBittorrent`
-- Name: `emulerr`
-- Host: `emulerr`
+- Name: `aMulerr`
+- Host: `amulerr`
 - Port: `3000`
-- Username (if using PASSWORD): `emulerr`
-- Password (if using PASSWORD): `PASSWORD` (from environment variable)
 - Priority: `50`
 
 Also set the Download Client's `Remote Path Mappings`:
 
-- Host: `emulerr`
+- Host: `amulerr`
 - Remote Path: `/downloads`
 - Local Path: `{The /downloads folder inside MOUNTED PATH FOR RADARR}`
 
 Then, add a new Indexer in *RR:
 
 - Type: `Torznab`
-- Name: `emulerr`
+- Name: `aMulerr`
 - RSS: `No`
 - Automatic Search: `No`
 - Interactive Search: `Yes`
-- URL: `http://emulerr:3000/`
-- API Key (if using PASSWORD): `PASSWORD` (from environment variable)
-- Download Client: `emulerr`
-
-## aMule configuration overrides
-
-You can override (or add) any setting from the base `amule.conf` without editing the original file.
-At container startup an override file is merged on top of the base configuration.
-
-Location inside the container:
-```
-/config/amule/amule.overrides.conf
-```
-
-Minimal example matching the shipped default with a changed nick:
-```ini
-[eMule]
-Nick=emulerr_test_override
-```
+- URL: `http://amulerr:3000/`
+- Download Client: `aMulerr`
 
 ## Removing stale downloads
-Since eMulerr simulates a qBittorrent api, it is fully compatible with:
+
+Since aMulerr simulates a qBittorrent api, it is fully compatible with:
 - [Decluttarrr](https://github.com/ManiMatter/decluttarr)
-- [eMulerrStalledChecker](https://github.com/Jorman/Scripts/tree/master/eMulerrStalledChecker)
 
 ## Troubleshooting
 
