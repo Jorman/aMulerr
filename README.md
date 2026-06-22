@@ -1,4 +1,4 @@
-# Amulerr
+# aMulerr
 
 Integrate your *rr apps with aMule (eD2k/KAD). Compatible with:
 
