@@ -18,6 +18,12 @@ function RouteComponent() {
       <li>Priority: 50</li>
       <li>Remove completed: Yes</li>
     </ul>
+    <p className="my-2">Also set the Download Client's Remote Path Mappings:</p>
+    <ul className="list-disc pl-16 [&>*]:select-text">
+      <li>Host: amulerr</li>
+      <li>Remote Path: /downloads</li>
+      <li>Local Path: {"{"}The /downloads folder inside MOUNTED PATH FOR RADARR{"}"}</li>
+    </ul>
     <p className="my-2 mt-8">Then, configure the indexer in *RR:</p>
     <ul className="list-disc pl-16 [&>*]:select-text">
       <li>Type: Torznab</li>
