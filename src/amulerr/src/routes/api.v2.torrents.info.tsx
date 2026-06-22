@@ -70,7 +70,7 @@ function statusToQbittorrentState(
         ? ("downloading" as const)
         : f.progress && parseFloat(f.progress) < 1
           ? ("stalledDL" as const)
-          : "pausedUP" as const
+          : "downloading" as const
     case 4:
     case 5:
     case 6:
