@@ -33,7 +33,7 @@ export const Route = createFileRoute('/api/v2/torrents/info')({
             name: f.fileName,
             size: f.fileSize,
             size_done: f.fileSizeDownloaded,
-            progress: Math.min(100, parseFloat(f.progress ?? '0')) / 100,
+            progress: Math.min(99.99, parseFloat(f.progress ?? '0')) / 100,
             dlspeed: f.speed,
             eta: f.speed && f.speed > 0 ? (f.fileSize - (f.fileSizeDownloaded ?? 0)) / f.speed : 8640000,
             state: statusToQbittorrentState(f),
