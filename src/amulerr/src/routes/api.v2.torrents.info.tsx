@@ -14,6 +14,7 @@ export const Route = createFileRoute('/api/v2/torrents/info')({
           const categories = await amule.getCategories()
           const downloads = await amule.getDownloadQueue()
           const shared = await amule.getSharedFiles()
+
           return {
             categories,
             downloads: downloads.map(d => ({ ...d, category_obj: categories.find(c => c.id === d.category) })),
@@ -50,6 +51,11 @@ export const Route = createFileRoute('/api/v2/torrents/info')({
             state: statusToQbittorrentState(f),
             content_path: `${f.category_obj?.path}/${f.fileName}`,
             category: f.category_obj?.title,
+            src_count: f.sourceCount,
+            src_count_not_current: f.sourceCountNotCurrent,
+            src_count_xfer: f.sourceCountXfer,
+            src_count_a4af: f.sourceCountA4AF,
+            last_seen_complete: f.lastSeenComplete,
           })),
           ...filteredShared.map((f) => ({
             hash: f.fileHash,

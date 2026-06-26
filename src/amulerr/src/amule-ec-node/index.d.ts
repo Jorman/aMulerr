@@ -30,6 +30,8 @@ declare module '#/amule-ec-node/AmuleClient.mjs' {
         completeSources?: number
         onQueue?: number
         ed2kLink?: string
+        comment?: string
+        rating?: number
         raw?: AmuleTagTree
     }
 
@@ -38,11 +40,16 @@ declare module '#/amule-ec-node/AmuleClient.mjs' {
         fileName: string
         fileHash: string
         fileSize: number
+        ed2kLink?: string
         fileSizeDownloaded?: number
         speed?: number
+        rating?: number
         status?: number
         sourceCount?: number
+        sourceCountNotCurrent?: number
         sourceCountXfer?: number
+        sourceCountA4AF?: number
+        lastSeenComplete?: number
         category?: number
         progress?: string
         raw?: AmuleTagTree

@@ -2,7 +2,7 @@ services:
   amulerr:
     container_name: amulerr
     build: ./amulerr
-    entrypoint: 'pnpm run dev'
+    entrypoint: "pnpm run dev" # dev mount
     user: "0:0"
     environment:
       - AMULE_HOST=amule
@@ -11,7 +11,7 @@ services:
     ports:
       - "3000:3000" # API (amulerr)
     volumes:
-      - "./amulerr:/app"
+      - "./amulerr:/app" # dev mount
   amule:
     image: ngosang/amule:latest
     container_name: amule
