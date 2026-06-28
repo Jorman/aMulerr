@@ -49,6 +49,17 @@ volumes:
   amule_data:
 ```
 
+## Environment Variables
+
+| Variable | Description |
+| --- | --- |
+| `AMULE_HOST` | Hostname of the aMule container. |
+| `AMULE_PORT` | Port for External Connections (default: `4712`). |
+| `AMULE_PWD` | Password for External Connections (GUI_PWD in aMule). |
+| `ALLOWED_CATEGORIES` | Comma-separated list of categories allowed to be created in aMule (e.g. `tv-sonarr-aMulerr,radarr-aMulerr`). If configured, other categories will be ignored. |
+| `SONARR_CATEGORY` | Specific allowed category name for Sonarr. |
+| `RADARR_CATEGORY` | Specific allowed category name for Radarr. |
+
 ## Configuring *rr
 
 In order to get started, configure the Download Client in *RR:
