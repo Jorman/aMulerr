@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 
-const DELETED_HASHES_FILE = path.join(process.cwd(), 'deleted_hashes.json');
+const DELETED_HASHES_FILE = path.join(os.tmpdir(), 'deleted_hashes.json');
 
 const deletedHashes = new Set<string>();
 
