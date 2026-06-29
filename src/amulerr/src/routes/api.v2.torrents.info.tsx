@@ -1,6 +1,7 @@
 
 import { useAmule } from '#/amule'
 import type { DownloadItem } from '#/amule-ec-node/AmuleClient.mjs'
+import { isHashDeleted } from '#/lib/deleted'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/api/v2/torrents/info')({
@@ -19,7 +20,7 @@ export const Route = createFileRoute('/api/v2/torrents/info')({
             categories,
             downloads: downloads.map(d => ({ ...d, category_obj: categories.find(c => c.id === d.category) })),
             shared: shared
-              .filter(s => !downloads.some(d => d.fileHash === s.fileHash))
+              .filter(s => s.fileHash && !isHashDeleted(s.fileHash) && !downloads.some(d => d.fileHash === s.fileHash))
               .map(d => ({ ...d, category_obj: categories.find(c => c.path === d.path) })),
           }
         })
